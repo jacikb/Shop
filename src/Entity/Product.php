@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
  */
@@ -15,6 +16,14 @@ class Product
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="products")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
+     */
+    private $owner;
+
 
     /**
      * @ORM\Column(type="smallint")
@@ -40,6 +49,31 @@ class Product
      * @ORM\Column(type="float")
      */
     private $price;
+
+    /**
+     * Set owner
+     *
+     * @param integer $owner
+     *
+     * @return Product
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+        return $this;
+    }
+
+    /**
+     * Get owner
+     *
+     * @return User
+     *
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
 
     public function getId(): ?int
     {
@@ -112,5 +146,10 @@ class Product
     public function setDescription($description): void
     {
         $this->description = $description;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }

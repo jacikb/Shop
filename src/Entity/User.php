@@ -7,8 +7,11 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Product;
+
 
 /**
  * @ORM\Entity
@@ -33,10 +36,17 @@ class User extends BaseUser
      */
     protected $firstName;
 
+    /**
+     * @var product[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="Product", mappedBy="owner")
+     * @ORM\JoinColumn(name="product_id", referencedColumnName="id")
+     */
+    protected $products;
+
     public function __construct()
     {
         parent::__construct();
-        // your own logic
+        $this->products = new ArrayCollection();
     }
 
     /**
@@ -71,5 +81,27 @@ class User extends BaseUser
         $this->firstName = $firstName;
     }
 
+    /**
+     * @return Product[]|ArrayCollection
+     */
+    public function getProducts()
+    {
+        return $this->products;
+    }
 
+    /**
+     * @param Product $product
+     *
+     * @return $this
+     */
+    public function addProducts(Product $product)
+    {
+        $this->products[] = $product;
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return parent::__toString();
+    }
 }
