@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Dictionary\StatusDictionary;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -26,7 +28,9 @@ class Product
 
 
     /**
-     * @ORM\Column(type="smallint")
+     * @var StatusDictionary[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Dictionary\StatusDictionary", mappedBy="id")
+     * @ORM\JoinColumn(name="status_id", referencedColumnName="id")
      */
     private $status;
 
@@ -49,6 +53,27 @@ class Product
      * @ORM\Column(type="float")
      */
     private $price;
+
+    /**
+     * @var \DateTime $created_at
+     *
+     * @ORM\Column(type="datetime")
+     */
+    private $created_at;
+
+    /**
+     * @var \DateTime $updated_at
+     *
+     * @ORM\Column(type="datetime")
+     */
+    private $updated_at;
+
+
+    public function __construct()
+    {
+
+        $this->status = new ArrayCollection();
+    }
 
     /**
      * Set owner
@@ -80,23 +105,37 @@ class Product
         return $this->id;
     }
 
-    public function getStatus(): ?int
+    /**
+     * @return StatusDictionary[]|ArrayCollection[]
+     */
+    public function getStatus(): ?StatusDictionary
     {
         return $this->status;
     }
 
-    public function setStatus(int $status): self
+    /**
+     * @param StatusDictionary $status
+     * @return Product
+     */
+    public function setStatus(StatusDictionary $status): self
     {
         $this->status = $status;
 
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getCategory(): ?int
     {
         return $this->category;
     }
 
+    /**
+     * @param int $category
+     * @return Product
+     */
     public function setCategory(int $category): self
     {
         $this->category = $category;
@@ -146,6 +185,58 @@ class Product
     public function setDescription($description): void
     {
         $this->description = $description;
+    }
+
+
+    /**
+     * @return StatusDictionary[]|ArrayCollection
+     */
+    public function getStatusDictionary()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param StatusDictionary $astatus
+     *
+     * @return $this
+     */
+    public function addStatus(StatusDictionary $statusDictionary)
+    {
+        $this->status[] = $statusDictionary;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @param \DateTime $created_at
+     */
+    public function setCreatedAt(\DateTime $created_at): void
+    {
+        $this->created_at = $created_at;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * @param \DateTime $updated_at
+     */
+    public function setUpdatedAt(\DateTime $updated_at): void
+    {
+        $this->updated_at = $updated_at;
     }
 
     public function __toString()
