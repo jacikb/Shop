@@ -38,8 +38,7 @@ class User extends BaseUser
 
     /**
      * @var product[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="Product", mappedBy="owner")
-     * @ORM\JoinColumn(name="product_id", referencedColumnName="id")
+     * @ORM\OneToMany(targetEntity="Product", mappedBy="user")
      */
     protected $products;
 
@@ -82,7 +81,7 @@ class User extends BaseUser
     }
 
     /**
-     * @return Product[]|ArrayCollection
+     * @return products[]|ArrayCollection
      */
     public function getProducts()
     {

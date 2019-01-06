@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
-use App\Entity\Dictionary\StatusDictionary;
+use App\Entity\StatusDictionary;
+use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
@@ -20,33 +22,45 @@ class Product
     private $id;
 
     /**
-     * @var User
+     * @var User`
      * @ORM\ManyToOne(targetEntity="User", inversedBy="products")
-     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
-    private $owner;
+    private $user;
 
 
     /**
-     * @var StatusDictionary[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\Dictionary\StatusDictionary", mappedBy="id")
+     * @var StatusDictionary
+     * @ORM\ManyToOne(targetEntity="App\Entity\StatusDictionary", inversedBy="products")
      * @ORM\JoinColumn(name="status_id", referencedColumnName="id")
      */
     private $status;
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message = "Nazwa nie może być pusta")
+     * @Assert\Length(
+     *      min=5,
+     *      max=255,
+     *      minMessage="Nazwa musi mieć minimum 5 znaków!",
+     *      maxMessage="Nazwa nie może być dłuższa niż 255 znakóœ!"
+     * )
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank(message = "Opis nie może być pusty")
+     * @Assert\Length(
+     *      min=20,
+     *      minMessage="Opis musi mieć minimum 20 znaków!",
+     * )
      */
     private $description;
     /**
      * @ORM\Column(type="integer")
      */
-    private $category;
+//    private $category;
 
 
     /**
@@ -55,48 +69,49 @@ class Product
     private $price;
 
     /**
-     * @var \DateTime $created_at
-     *
-     * @ORM\Column(type="datetime")
+     * @var \DateTime $createAt
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="create_at", type="datetime")
      */
-    private $created_at;
+
+    private $createAt;
 
     /**
-     * @var \DateTime $updated_at
-     *
-     * @ORM\Column(type="datetime")
+     * @var \DateTime $updateAt
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(name="update_at", type="datetime")
      */
-    private $updated_at;
+    private $updateAt;
 
 
     public function __construct()
     {
 
-        $this->status = new ArrayCollection();
+        // $this->status = new ArrayCollection();
     }
 
     /**
-     * Set owner
+     * Set user
      *
-     * @param integer $owner
+     * @param User $user
      *
      * @return Product
      */
-    public function setOwner($owner)
+    public function setUser(User $user)
     {
-        $this->owner = $owner;
+        $this->user = $user;
         return $this;
     }
 
     /**
-     * Get owner
+     * Get User
      *
      * @return User
      *
      */
-    public function getOwner()
+    public function getUser(): ?string
     {
-        return $this->owner;
+        return $this->user;
     }
 
 
@@ -127,26 +142,26 @@ class Product
     /**
      * @return int|null
      */
-    public function getCategory(): ?int
-    {
-        return $this->category;
-    }
+//    public function getCategory(): ?int
+//    {
+//        return $this->category;
+//    }
 
     /**
      * @param int $category
      * @return Product
      */
-    public function setCategory(int $category): self
-    {
-        $this->category = $category;
-
-        return $this;
-    }
+//    public function setCategory(int $category): self
+//    {
+//        $this->category = $category;
+//
+//        return $this;
+//    }
 
     /**
      * @return mixed
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -174,7 +189,7 @@ class Product
     /**
      * @return mixed
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -203,40 +218,40 @@ class Product
      */
     public function addStatus(StatusDictionary $statusDictionary)
     {
-        $this->status[] = $statusDictionary;
+        $this->status = $statusDictionary;
         return $this;
     }
 
     /**
      * @return \DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreateAt(): ?\DateTime
     {
-        return $this->created_at;
+        return $this->createAt;
     }
 
     /**
      * @param \DateTime $created_at
      */
-    public function setCreatedAt(\DateTime $created_at): void
+    public function setCreateAt(\DateTime $created_at): void
     {
-        $this->created_at = $created_at;
+        $this->createAt = $created_at;
     }
 
     /**
      * @return \DateTime
      */
-    public function getUpdatedAt(): \DateTime
+    public function getUpdateAt(): ?\DateTime
     {
-        return $this->updated_at;
+        return $this->updateAt;
     }
 
     /**
-     * @param \DateTime $updated_at
+     * @param \DateTime $updateAt
      */
-    public function setUpdatedAt(\DateTime $updated_at): void
+    public function setUpdateAt(\DateTime $updateAt): void
     {
-        $this->updated_at = $updated_at;
+        $this->updateAt = $updateAt;
     }
 
     public function __toString()

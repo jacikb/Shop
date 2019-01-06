@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository\Dictionary;
+namespace App\Repository;
 
 use App\Entity\StatusDictionary;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
